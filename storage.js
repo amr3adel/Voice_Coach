@@ -15,6 +15,9 @@
 
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
+const SB_DEFAULT_URL = 'https://emiqdagisbjyafwnwjhu.supabase.co';
+const SB_DEFAULT_KEY = 'sb_publishable_Ct3NnRd6JgxszTHB4t7-xw_jswQmkZc';
+
 export class StorageManager {
 
   /**
@@ -41,8 +44,9 @@ export class StorageManager {
    */
   _initSupabaseFromStorage() {
     try {
-      const url = localStorage.getItem('voice-coach-sb-url');
-      const key = localStorage.getItem('voice-coach-sb-key');
+      const disabled = localStorage.getItem('voice-coach-sb-disabled') === 'true';
+      const url = localStorage.getItem('voice-coach-sb-url') || (disabled ? null : SB_DEFAULT_URL);
+      const key = localStorage.getItem('voice-coach-sb-key') || (disabled ? null : SB_DEFAULT_KEY);
 
       if (url && key) {
         this.supabase = createClient(url, key);
@@ -69,6 +73,7 @@ export class StorageManager {
     try {
       localStorage.setItem('voice-coach-sb-url', url);
       localStorage.setItem('voice-coach-sb-key', key);
+      localStorage.removeItem('voice-coach-sb-disabled');
       
       this.supabase = createClient(url, key);
       console.log('[StorageManager] Supabase connected successfully.');
@@ -89,6 +94,7 @@ export class StorageManager {
   disconnectSupabase() {
     localStorage.removeItem('voice-coach-sb-url');
     localStorage.removeItem('voice-coach-sb-key');
+    localStorage.setItem('voice-coach-sb-disabled', 'true');
     this.supabase = null;
     console.log('[StorageManager] Supabase disconnected.');
   }
