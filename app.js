@@ -67,6 +67,15 @@ export class VoiceCoachApp {
     this._bindEventListeners();
     this._updateHistoryBadge();
 
+    // Register background sync callback
+    this.storage.registerSyncCallback(() => {
+      this._updateHistoryBadge();
+      this.showNotification('Cloud database synchronized.', 'success');
+      if (this.els.historyModal?.classList.contains('open')) {
+        this.openHistory(); // refresh history list view if open
+      }
+    });
+
     // Create AudioAnalyzer with the waveform canvas
     if (this.els.waveformCanvas) {
       this.audioAnalyzer = new AudioAnalyzer(this.els.waveformCanvas);
@@ -119,6 +128,7 @@ export class VoiceCoachApp {
       newSessionBtn  : id('new-session-btn'),
       saveSessionBtn : id('save-session-btn'),
       historyBtn     : id('history-btn'),
+      settingsBtn    : id('settings-btn'),
       clearHistoryBtn: id('clear-history-btn'),
 
       // History modal
@@ -128,6 +138,13 @@ export class VoiceCoachApp {
       // Permission modal
       permissionModal: id('permission-modal'),
       allowMicBtn    : id('allow-mic-btn'),
+
+      // Settings modal
+      settingsModal  : id('settings-modal'),
+      settingsForm   : id('settings-form'),
+      sbUrlInput     : id('sb-url'),
+      sbKeyInput     : id('sb-key'),
+      disconnectBtn  : id('disconnect-btn'),
 
       // Tabs
       tabBtns        : document.querySelectorAll('.tab-btn'),
@@ -179,6 +196,11 @@ export class VoiceCoachApp {
 
     // ── History button ────────────────────────────────────────
     this.els.historyBtn?.addEventListener('click', () => this.openHistory());
+
+    // ── Settings button ───────────────────────────────────────
+    this.els.settingsBtn?.addEventListener('click', () => this.openSettings());
+    this.els.settingsForm?.addEventListener('submit', (e) => this._saveSettings(e));
+    this.els.disconnectBtn?.addEventListener('click', () => this._disconnectSettings());
 
     // ── Dashboard action buttons ─────────────────────────────
     this.els.newSessionBtn?.addEventListener('click', () => {
@@ -979,7 +1001,8 @@ export class VoiceCoachApp {
   _isAnyModalOpen () {
     return !!(
       this.els.historyModal?.classList.contains('open') ||
-      this.els.permissionModal?.classList.contains('open')
+      this.els.permissionModal?.classList.contains('open') ||
+      this.els.settingsModal?.classList.contains('open')
     );
   }
 
@@ -987,6 +1010,55 @@ export class VoiceCoachApp {
   _closeAllModals () {
     this.els.historyModal?.classList.remove('open');
     this.els.permissionModal?.classList.remove('open');
+    this.els.settingsModal?.classList.remove('open');
+  }
+
+  /** Open settings modal and prefill data if connected. */
+  openSettings () {
+    if (this.storage.isConnected()) {
+      if (this.els.sbUrlInput) this.els.sbUrlInput.value = localStorage.getItem('voice-coach-sb-url') || '';
+      if (this.els.sbKeyInput) this.els.sbKeyInput.value = localStorage.getItem('voice-coach-sb-key') || '';
+    } else {
+      if (this.els.sbUrlInput) this.els.sbUrlInput.value = '';
+      if (this.els.sbKeyInput) this.els.sbKeyInput.value = '';
+    }
+    this.els.settingsModal?.classList.add('open');
+  }
+
+  /** Close settings modal. */
+  closeSettings () {
+    this.els.settingsModal?.classList.remove('open');
+  }
+
+  /** Save Supabase connection details and trigger sync. */
+  async _saveSettings (e) {
+    e.preventDefault();
+    const url = this.els.sbUrlInput?.value.trim();
+    const key = this.els.sbKeyInput?.value.trim();
+
+    if (!url || !key) {
+      this.showNotification('URL and Key are required.', 'error');
+      return;
+    }
+
+    try {
+      this.showNotification('Connecting to Supabase...', 'info');
+      await this.storage.connectSupabase(url, key);
+      this.showNotification('Supabase connected and synced!', 'success');
+      this.closeSettings();
+    } catch (err) {
+      this.showNotification('Connection failed. Verify URL and Key.', 'error');
+    }
+  }
+
+  /** Disconnect database and clear fields. */
+  _disconnectSettings () {
+    this.storage.disconnectSupabase();
+    if (this.els.sbUrlInput) this.els.sbUrlInput.value = '';
+    if (this.els.sbKeyInput) this.els.sbKeyInput.value = '';
+    this.showNotification('Supabase database disconnected.', 'info');
+    this.closeSettings();
+    this._updateHistoryBadge();
   }
 
   /** Smoothly update a metric card value. */
