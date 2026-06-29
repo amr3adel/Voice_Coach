@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head><title>Debug Test</title></head>
+<body>
+<h1>Module Debug Test</h1>
+<pre id="log"></pre>
+<script type="module">
+  const log = (msg) => {
+    document.getElementById('log').textContent += msg + '\n';
+    console.log(msg);
+  };
+
+  log('1. Script module executing...');
+
+  try {
+    const { StorageManager } = await import('./storage.js');
+    log('2. storage.js loaded OK');
+  } catch(e) { log('2. FAIL storage.js: ' + e.message); }
+
+  try {
+    const { AudioAnalyzer } = await import('./audio-analyzer.js');
+    log('3. audio-analyzer.js loaded OK');
+  } catch(e) { log('3. FAIL audio-analyzer.js: ' + e.message); }
+
+  try {
+    const { SpeechEngine } = await import('./speech-engine.js');
+    log('4. speech-engine.js loaded OK');
+  } catch(e) { log('4. FAIL speech-engine.js: ' + e.message); }
+
+  try {
+    const { MetricsAnalyzer } = await import('./metrics.js');
+    log('5. metrics.js loaded OK');
+  } catch(e) { log('5. FAIL metrics.js: ' + e.message); }
+
+  try {
+    const { RecommendationEngine } = await import('./recommendations.js');
+    log('6. recommendations.js loaded OK');
+  } catch(e) { log('6. FAIL recommendations.js: ' + e.message); }
+
+  try {
+    const { ChartRenderer } = await import('./charts.js');
+    log('7. charts.js loaded OK');
+  } catch(e) { log('7. FAIL charts.js: ' + e.message); }
+
+  try {
+    const { VoiceCoachApp } = await import('./app.js');
+    log('8. app.js loaded OK');
+    log('9. VoiceCoachApp type: ' + typeof VoiceCoachApp);
+  } catch(e) { log('8. FAIL app.js: ' + e.message); }
+
+  log('10. All imports complete!');
+
+  // Check if app initialized
+  setTimeout(() => {
+    log('11. window.__voiceCoach = ' + typeof window.__voiceCoach);
+    if (window.__voiceCoach) {
+      log('12. recordBtn = ' + window.__voiceCoach.els.recordBtn);
+      log('13. isRecording = ' + window.__voiceCoach.isRecording);
+    }
+  }, 1000);
+</script>
+</body>
+</html>

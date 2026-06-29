@@ -1062,7 +1062,8 @@ a {
   padding: var(--sp-6);
 }
 
-.modal.active {
+.modal.active,
+.modal.open {
   display: flex;
 }
 
