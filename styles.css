@@ -639,9 +639,24 @@ a {
 }
 
 
+/* ── Dashboard Grid ── */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--sp-6);
+  margin-bottom: var(--sp-8);
+  align-items: start;
+}
+
+@media (min-width: 769px) {
+  .dashboard-grid {
+    grid-template-columns: 1.15fr 0.85fr;
+  }
+}
+
 /* ── Speed Chart ── */
 .chart-container {
-  margin-bottom: var(--sp-6);
+  margin-bottom: 0;
   animation: slideUp 0.5s var(--ease-out) 0.35s both;
 }
 
@@ -664,8 +679,14 @@ a {
    13. TABS
    ───────────────────────────────────────────── */
 .tabs-container {
-  margin-bottom: var(--sp-8);
+  margin-bottom: 0;
   animation: slideUp 0.5s var(--ease-out) 0.45s both;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: var(--sp-6);
 }
 
 .tab-nav {
@@ -731,6 +752,9 @@ a {
 .tab-content.active {
   display: block;
   animation: fadeIn 0.3s var(--ease-out) both;
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: var(--sp-2);
 }
 
 

@@ -175,90 +175,71 @@
         </div>
       </div>
 
-      <!-- Speed Timeline Chart -->
-      <div class="chart-container glass-card">
-        <h3 class="section-title">Speaking Speed Over Time</h3>
-        <canvas id="speed-chart" width="900" height="200" aria-label="Speaking speed timeline chart"></canvas>
-      </div>
-
-      <!-- Tabbed Analysis Sections -->
-      <div class="tabs-container">
-        <nav class="tab-nav" role="tablist">
-          <button class="tab-btn active" role="tab" aria-selected="true" aria-controls="pause-tab" data-tab="pause-tab">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>
-            </svg>
-            Pause Analysis
-          </button>
-          <button class="tab-btn" role="tab" aria-selected="false" aria-controls="clarity-tab" data-tab="clarity-tab">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/>
-            </svg>
-            Clarity Details
-          </button>
-          <button class="tab-btn" role="tab" aria-selected="false" aria-controls="recommendations-tab" data-tab="recommendations-tab">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M9 18l6-6-6-6"/>
-            </svg>
-            Recommendations
-          </button>
-        </nav>
-
-        <!-- Pause Analysis Tab -->
-        <div id="pause-tab" class="tab-content active" role="tabpanel">
-          <div class="pause-list" id="pause-list">
-            <!-- JS injects pause items here, example structure:
-            <div class="pause-item glass-card">
-              <span class="pause-timestamp">01:23</span>
-              <div class="pause-duration-bar">
-                <div class="pause-duration-fill" style="width: 60%"></div>
-              </div>
-              <span class="pause-duration-text">2.3s</span>
-              <span class="pause-classification badge-natural">Natural</span>
-            </div>
-            -->
-            <p class="empty-state">No pauses detected yet. Complete a session to see analysis.</p>
-          </div>
+      <!-- Dashboard Grid (Side-by-Side Cards) -->
+      <div class="dashboard-grid">
+        <!-- Speed Timeline Chart -->
+        <div class="chart-container glass-card">
+          <h3 class="section-title">Speaking Speed Over Time</h3>
+          <canvas id="speed-chart" width="900" height="200" aria-label="Speaking speed timeline chart"></canvas>
         </div>
 
-        <!-- Clarity Details Tab -->
-        <div id="clarity-tab" class="tab-content" role="tabpanel">
-          <div class="clarity-section">
-            <h4 class="subsection-title">Detected Issues</h4>
-            <div id="issues-list" class="issues-list">
-              <p class="empty-state">No issues detected. Complete a session to see details.</p>
-            </div>
-          </div>
-          <div class="clarity-section">
-            <h4 class="subsection-title">Filler Words</h4>
-            <div id="filler-cloud" class="filler-cloud">
-              <!-- JS injects filler word pills here, example:
-              <span class="filler-word">um <span class="filler-count">×12</span></span>
-              -->
-              <p class="empty-state">No filler words detected.</p>
-            </div>
-          </div>
-          <div class="clarity-section">
-            <h4 class="subsection-title">Dropped Letters</h4>
-            <div id="dropped-letters-list" class="dropped-letters-list">
-              <p class="empty-state">No dropped letters detected.</p>
-            </div>
-          </div>
-        </div>
+        <!-- Tabbed Analysis Sections -->
+        <div class="tabs-container">
+          <nav class="tab-nav" role="tablist">
+            <button class="tab-btn active" role="tab" aria-selected="true" aria-controls="pause-tab" data-tab="pause-tab">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>
+              </svg>
+              Pause Analysis
+            </button>
+            <button class="tab-btn" role="tab" aria-selected="false" aria-controls="clarity-tab" data-tab="clarity-tab">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/>
+              </svg>
+              Clarity Details
+            </button>
+            <button class="tab-btn" role="tab" aria-selected="false" aria-controls="recommendations-tab" data-tab="recommendations-tab">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 18l6-6-6-6"/>
+              </svg>
+              Recommendations
+            </button>
+          </nav>
 
-        <!-- Recommendations Tab -->
-        <div id="recommendations-tab" class="tab-content" role="tabpanel">
-          <div id="recommendations-list" class="recommendations-list">
-            <!-- JS injects recommendation items here, example:
-            <div class="recommendation-item glass-card severity-warning">
-              <div class="rec-icon">⚠️</div>
-              <div class="rec-body">
-                <h5 class="rec-title">Reduce Filler Words</h5>
-                <p class="rec-description">You used 12 filler words. Try pausing silently instead of saying "um" or "uh".</p>
+          <!-- Pause Analysis Tab -->
+          <div id="pause-tab" class="tab-content active" role="tabpanel">
+            <div class="pause-list" id="pause-list">
+              <p class="empty-state">No pauses detected yet. Complete a session to see analysis.</p>
+            </div>
+          </div>
+
+          <!-- Clarity Details Tab -->
+          <div id="clarity-tab" class="tab-content" role="tabpanel">
+            <div class="clarity-section">
+              <h4 class="subsection-title">Detected Issues</h4>
+              <div id="issues-list" class="issues-list">
+                <p class="empty-state">No issues detected. Complete a session to see details.</p>
               </div>
             </div>
-            -->
-            <p class="empty-state">Complete a session to receive personalized coaching tips.</p>
+            <div class="clarity-section">
+              <h4 class="subsection-title">Filler Words</h4>
+              <div id="filler-cloud" class="filler-cloud">
+                <p class="empty-state">No filler words detected.</p>
+              </div>
+            </div>
+            <div class="clarity-section">
+              <h4 class="subsection-title">Dropped Letters</h4>
+              <div id="dropped-letters-list" class="dropped-letters-list">
+                <p class="empty-state">No dropped letters detected.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recommendations Tab -->
+          <div id="recommendations-tab" class="tab-content" role="tabpanel">
+            <div id="recommendations-list" class="recommendations-list">
+              <p class="empty-state">Complete a session to receive personalized coaching tips.</p>
+            </div>
           </div>
         </div>
       </div>
