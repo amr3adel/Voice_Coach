@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- ───────────────────────────────────────────────
+       Voice Coach — AI Presentation Skills Trainer
+       All processing happens on-device. No data leaves your browser.
+       ─────────────────────────────────────────────── -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Voice Coach analyzes your speaking speed, pauses, filler words, and clarity in real-time to help you deliver better presentations and meetings." />
+  <meta name="keywords" content="voice coach, presentation trainer, speech analysis, public speaking, filler words, speaking speed" />
+  <meta name="author" content="Voice Coach" />
+  <meta name="theme-color" content="#0a0a0f" />
+  <meta property="og:title" content="Voice Coach — AI Presentation Skills Trainer" />
+  <meta property="og:description" content="Real-time voice analysis for better presentations. All data stays on your device." />
+  <meta property="og:type" content="website" />
+
+  <title>Voice Coach — AI Presentation Skills Trainer</title>
+
+  <!-- Favicon: microphone emoji rendered as SVG data URI -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎙️</text></svg>" />
+
+  <!-- Google Font: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- App Styles -->
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+
+  <!-- ╔══════════════════════════════════════════════╗
+       ║  1. HEADER                                   ║
+       ╚══════════════════════════════════════════════╝ -->
+  <header class="app-header">
+    <div class="header-inner container">
+      <!-- Logo / Brand -->
+      <a href="#" class="logo" aria-label="Voice Coach Home">
+        <span class="logo-icon" aria-hidden="true">
+          <!-- Mic SVG icon -->
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+            <line x1="12" y1="19" x2="12" y2="23"/>
+            <line x1="8" y1="23" x2="16" y2="23"/>
+          </svg>
+        </span>
+        <span class="logo-text">VOICE COACH</span>
+      </a>
+
+      <!-- Navigation -->
+      <nav class="header-nav">
+        <button id="history-btn" class="nav-btn" aria-label="View session history">
+          <!-- Clock / History icon -->
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12 6 12 12 16 14"/>
+          </svg>
+          <span>History</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+
+  <!-- ╔══════════════════════════════════════════════╗
+       ║  2. MAIN RECORDING VIEW                      ║
+       ╚══════════════════════════════════════════════╝ -->
+  <main id="recording-view" class="view active">
+    <div class="container">
+
+      <!-- Waveform Visualizer -->
+      <div class="waveform-container glass-card">
+        <canvas id="waveform-canvas" width="900" height="150" aria-label="Audio waveform visualization"></canvas>
+      </div>
+
+      <!-- Timer & Status Row -->
+      <div class="session-info">
+        <div id="timer" class="timer" aria-live="polite" aria-label="Recording duration">00:00</div>
+        <div id="status-badge" class="status-badge status-ready">
+          <span class="status-dot"></span>
+          <span class="status-text">Ready</span>
+        </div>
+      </div>
+
+      <!-- Live Metrics Row — 4 cards -->
+      <div class="metrics-grid">
+        <div class="metric-card glass-card" id="live-wpm">
+          <span class="metric-value" data-metric="wpm">0</span>
+          <span class="metric-label">WPM</span>
+          <span class="metric-sublabel">Words per min</span>
+        </div>
+        <div class="metric-card glass-card" id="live-clarity">
+          <span class="metric-value" data-metric="clarity">—</span>
+          <span class="metric-label">Clarity</span>
+          <span class="metric-sublabel">Speech quality</span>
+        </div>
+        <div class="metric-card glass-card" id="live-fillers">
+          <span class="metric-value" data-metric="fillers">0</span>
+          <span class="metric-label">Fillers</span>
+          <span class="metric-sublabel">Detected</span>
+        </div>
+        <div class="metric-card glass-card" id="live-score">
+          <span class="metric-value" data-metric="score">—</span>
+          <span class="metric-label">Score</span>
+          <span class="metric-sublabel">Overall</span>
+        </div>
+      </div>
+
+      <!-- Live Transcript Area -->
+      <div class="transcript-container glass-card">
+        <div class="transcript-header">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+            <polyline points="10 9 9 9 8 9"/>
+          </svg>
+          <span>Live Transcript</span>
+        </div>
+        <div id="transcript-area" class="transcript-area" aria-live="polite" aria-label="Speech transcript">
+          <p class="transcript-placeholder">Your speech will appear here in real-time…</p>
+        </div>
+      </div>
+
+      <!-- Big Record Button -->
+      <div class="record-btn-container">
+        <button id="record-btn" class="record-btn" aria-label="Start recording">
+          <!-- Mic icon (shown when idle) -->
+          <svg class="icon-mic" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+            <line x1="12" y1="19" x2="12" y2="23"/>
+            <line x1="8" y1="23" x2="16" y2="23"/>
+          </svg>
+          <!-- Stop icon (shown when recording) -->
+          <svg class="icon-stop" width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+            <rect x="4" y="4" width="16" height="16" rx="3"/>
+          </svg>
+        </button>
+        <span class="record-btn-label">Tap to record</span>
+      </div>
+
+    </div>
+  </main>
+
+
+  <!-- ╔══════════════════════════════════════════════╗
+       ║  3. POST-SESSION DASHBOARD                    ║
+       ╚══════════════════════════════════════════════╝ -->
+  <section id="dashboard-view" class="view" aria-label="Session analysis dashboard">
+    <div class="container">
+
+      <!-- Session Summary Header -->
+      <div class="dashboard-header">
+        <h2 class="dashboard-title">Session Analysis</h2>
+        <div class="summary-cards">
+          <div class="summary-card glass-card">
+            <div class="summary-score-ring" id="overall-score">
+              <span class="score-letter">—</span>
+            </div>
+            <span class="summary-label">Overall Score</span>
+          </div>
+          <div class="summary-card glass-card">
+            <span class="summary-value" id="summary-duration">00:00</span>
+            <span class="summary-label">Duration</span>
+          </div>
+          <div class="summary-card glass-card">
+            <span class="summary-value" id="summary-words">0</span>
+            <span class="summary-label">Total Words</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Speed Timeline Chart -->
+      <div class="chart-container glass-card">
+        <h3 class="section-title">Speaking Speed Over Time</h3>
+        <canvas id="speed-chart" width="900" height="200" aria-label="Speaking speed timeline chart"></canvas>
+      </div>
+
+      <!-- Tabbed Analysis Sections -->
+      <div class="tabs-container">
+        <nav class="tab-nav" role="tablist">
+          <button class="tab-btn active" role="tab" aria-selected="true" aria-controls="pause-tab" data-tab="pause-tab">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>
+            </svg>
+            Pause Analysis
+          </button>
+          <button class="tab-btn" role="tab" aria-selected="false" aria-controls="clarity-tab" data-tab="clarity-tab">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/>
+            </svg>
+            Clarity Details
+          </button>
+          <button class="tab-btn" role="tab" aria-selected="false" aria-controls="recommendations-tab" data-tab="recommendations-tab">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 18l6-6-6-6"/>
+            </svg>
+            Recommendations
+          </button>
+        </nav>
+
+        <!-- Pause Analysis Tab -->
+        <div id="pause-tab" class="tab-content active" role="tabpanel">
+          <div class="pause-list" id="pause-list">
+            <!-- JS injects pause items here, example structure:
+            <div class="pause-item glass-card">
+              <span class="pause-timestamp">01:23</span>
+              <div class="pause-duration-bar">
+                <div class="pause-duration-fill" style="width: 60%"></div>
+              </div>
+              <span class="pause-duration-text">2.3s</span>
+              <span class="pause-classification badge-natural">Natural</span>
+            </div>
+            -->
+            <p class="empty-state">No pauses detected yet. Complete a session to see analysis.</p>
+          </div>
+        </div>
+
+        <!-- Clarity Details Tab -->
+        <div id="clarity-tab" class="tab-content" role="tabpanel">
+          <div class="clarity-section">
+            <h4 class="subsection-title">Detected Issues</h4>
+            <div id="issues-list" class="issues-list">
+              <p class="empty-state">No issues detected. Complete a session to see details.</p>
+            </div>
+          </div>
+          <div class="clarity-section">
+            <h4 class="subsection-title">Filler Words</h4>
+            <div id="filler-cloud" class="filler-cloud">
+              <!-- JS injects filler word pills here, example:
+              <span class="filler-word">um <span class="filler-count">×12</span></span>
+              -->
+              <p class="empty-state">No filler words detected.</p>
+            </div>
+          </div>
+          <div class="clarity-section">
+            <h4 class="subsection-title">Dropped Letters</h4>
+            <div id="dropped-letters-list" class="dropped-letters-list">
+              <p class="empty-state">No dropped letters detected.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recommendations Tab -->
+        <div id="recommendations-tab" class="tab-content" role="tabpanel">
+          <div id="recommendations-list" class="recommendations-list">
+            <!-- JS injects recommendation items here, example:
+            <div class="recommendation-item glass-card severity-warning">
+              <div class="rec-icon">⚠️</div>
+              <div class="rec-body">
+                <h5 class="rec-title">Reduce Filler Words</h5>
+                <p class="rec-description">You used 12 filler words. Try pausing silently instead of saying "um" or "uh".</p>
+              </div>
+            </div>
+            -->
+            <p class="empty-state">Complete a session to receive personalized coaching tips.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dashboard Action Buttons -->
+      <div class="dashboard-actions">
+        <button id="new-session-btn" class="btn btn-secondary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+          New Session
+        </button>
+        <button id="save-session-btn" class="btn btn-primary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+            <polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/>
+          </svg>
+          Save Session
+        </button>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ╔══════════════════════════════════════════════╗
+       ║  4. HISTORY MODAL                             ║
+       ╚══════════════════════════════════════════════╝ -->
+  <div id="history-modal" class="modal" role="dialog" aria-modal="true" aria-label="Session history">
+    <div class="modal-overlay"></div>
+    <div class="modal-content glass-card">
+      <div class="modal-header">
+        <h2 class="modal-title">Session History</h2>
+        <button class="modal-close" aria-label="Close history modal">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="history-list" class="history-list">
+          <!-- JS injects history items here, example:
+          <div class="history-item" data-session-id="abc123">
+            <div class="history-date">Jun 28, 2026</div>
+            <div class="history-meta">
+              <span class="score-badge grade-a">A</span>
+              <span class="history-duration">5:32</span>
+            </div>
+          </div>
+          -->
+          <p class="empty-state">No past sessions found. Start recording to build your history.</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="clear-history-btn" class="btn btn-danger btn-sm">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+          </svg>
+          Clear History
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ╔══════════════════════════════════════════════╗
+       ║  5. PERMISSION MODAL                          ║
+       ╚══════════════════════════════════════════════╝ -->
+  <div id="permission-modal" class="modal" role="dialog" aria-modal="true" aria-label="Microphone permission request">
+    <div class="modal-overlay"></div>
+    <div class="modal-content glass-card modal-compact">
+      <div class="permission-icon">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="url(#mic-gradient)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <defs>
+            <linearGradient id="mic-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#6366f1"/>
+              <stop offset="100%" stop-color="#8b5cf6"/>
+            </linearGradient>
+          </defs>
+          <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+          <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+          <line x1="12" y1="19" x2="12" y2="23"/>
+          <line x1="8" y1="23" x2="16" y2="23"/>
+        </svg>
+      </div>
+      <h2 class="permission-title">Microphone Access Needed</h2>
+      <p class="permission-body">
+        Voice Coach needs access to your microphone to analyze your speech in real-time.
+      </p>
+      <div class="permission-privacy">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+        <span>Your privacy matters — all audio is processed locally on your device. Nothing is uploaded or stored on any server.</span>
+      </div>
+      <button id="allow-mic-btn" class="btn btn-primary btn-lg">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+          <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+          <line x1="12" y1="19" x2="12" y2="23"/>
+          <line x1="8" y1="23" x2="16" y2="23"/>
+        </svg>
+        Allow Microphone
+      </button>
+    </div>
+  </div>
+
+
+  <!-- ╔══════════════════════════════════════════════╗
+       ║  JS MODULES                                   ║
+       ╚══════════════════════════════════════════════╝ -->
+  <script type="module" src="storage.js"></script>
+  <script type="module" src="audio-analyzer.js"></script>
+  <script type="module" src="speech-engine.js"></script>
+  <script type="module" src="metrics.js"></script>
+  <script type="module" src="recommendations.js"></script>
+  <script type="module" src="charts.js"></script>
+  <script type="module" src="app.js"></script>
+
+</body>
+</html>
